@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+  <display-name>TeleServe</display-name>
+  <description>Telecom Customer Self-Care Portal</description>
+
+  <context-param>
+    <param-name>db.driver</param-name>
+    <param-value>com.mysql.cj.jdbc.Driver</param-value>
+  </context-param>
+  <context-param>
+    <param-name>db.url</param-name>
+    <param-value>jdbc:mysql://localhost:3306/teleserve?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>db.user</param-name>
+    <param-value>root</param-value>
+  </context-param>
+  <context-param>
+    <param-name>db.password</param-name>
+    <param-value>Muj@2026</param-value>
+  </context-param>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/views/shared/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/views/shared/error.jsp</location>
+  </error-page>
+
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+
+</web-app>

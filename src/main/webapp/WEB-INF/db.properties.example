@@ -1,0 +1,8 @@
+# Database configuration (placeholder values).
+# The application currently reads db.* from web.xml context-params.
+# Use this file as reference or for externalized config in a future build step.
+
+db.driver=com.mysql.cj.jdbc.Driver
+db.url=jdbc:mysql://localhost:3306/teleserve?useSSL=false&serverTimezone=UTC
+db.user=teleserve_user
+db.password=change_me
