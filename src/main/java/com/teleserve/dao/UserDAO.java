@@ -39,6 +39,11 @@ public class UserDAO {
             "SELECT user_id, full_name, phone, email, password_hash, role, status, created_at " +
             "FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?";
     private static final String UPDATE_STATUS_SQL = "UPDATE users SET status = ? WHERE user_id = ?";
+    private static final String UPDATE_REMEMBER_TOKEN_SQL =
+            "UPDATE users SET remember_token = ? WHERE user_id = ?";
+    private static final String SELECT_BY_REMEMBER_TOKEN_SQL =
+            "SELECT user_id, full_name, phone, email, password_hash, role, status, created_at " +
+            "FROM users WHERE remember_token = ? AND status = 'ACTIVE'";
 
     public void createUser(User user) {
         LOGGER.info("Creating new user with email=" + user.getEmail());
@@ -159,6 +164,34 @@ public class UserDAO {
             LOGGER.log(Level.SEVERE, "Error updating user status", e);
             throw new DAOException("Error updating user status", e);
         }
+    }
+
+    public void updateRememberToken(int userId, String token) {
+        LOGGER.info("Updating remember token for userId=" + userId);
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(UPDATE_REMEMBER_TOKEN_SQL)) {
+            ps.setString(1, token);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error updating remember token", e);
+            throw new DAOException("Error updating remember token", e);
+        }
+    }
+
+    public Optional<User> findByRememberToken(String token) {
+        LOGGER.info("Finding user by remember token");
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(SELECT_BY_REMEMBER_TOKEN_SQL)) {
+            ps.setString(1, token);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return Optional.of(mapRowToUser(rs));
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error finding user by remember token", e);
+            throw new DAOException("Error finding user by remember token", e);
+        }
+        return Optional.empty();
     }
 
     private User mapRowToUser(ResultSet rs) throws SQLException {
