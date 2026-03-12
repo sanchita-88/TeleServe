@@ -178,31 +178,31 @@ http://localhost:8080/teleserve
 > Modern login with animated gradient background, input icons, and Remember Me
 
 <!-- Replace with actual screenshot -->
-<!-- ![Login](screenshots/login.png) -->
+ ![Login](screenshots/login.png) 
 
 ### User Dashboard
 > Account overview, current plan, data usage with progress bar, and smart plan suggestion
 
 <!-- Replace with actual screenshot -->
-<!-- ![Dashboard](screenshots/dashboard.png) -->
+ ![Dashboard](screenshots/dashboard.png) 
 
 ### Recharge Plans
 > Card-based plan selection with pricing, data, and validity details
 
 <!-- Replace with actual screenshot -->
-<!-- ![Recharge](screenshots/recharge.png) -->
+ ![Recharge](screenshots/recharge.png) 
 
 ### Admin Dashboard
 > Platform metrics with animated stat cards
 
 <!-- Replace with actual screenshot -->
-<!-- ![Admin](screenshots/admin-dashboard.png) -->
+ ![Admin](screenshots/admin-dashboard.png) 
 
 ### Admin — Plan Management
 > Create and manage telecom plans with inline form and status badges
 
 <!-- Replace with actual screenshot -->
-<!-- ![Plans](screenshots/plans.png) -->
+ ![Plans](screenshots/plans.png) 
 
 ---
 
