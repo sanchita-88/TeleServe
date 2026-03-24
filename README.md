@@ -2,7 +2,7 @@
 
 # 📡 TeleServe — Telecom Customer Self-Care Portal
 
-**A full-stack Java EE web application** that simulates a telecom self-care platform where customers can manage their accounts, recharge plans, track data usage, and more — while admins manage users and plans from a dedicated dashboard.
+**A full-stack Java EE web application** built without any frameworks — no Spring, no Hibernate, no Bootstrap — to demonstrate strong fundamentals in raw Servlet-based backend development, JDBC data access, and layered MVC architecture.
 
 [![Java](https://img.shields.io/badge/Java-11+-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Servlet](https://img.shields.io/badge/Servlet-4.0-007396?style=for-the-badge&logo=java&logoColor=white)](https://javaee.github.io/servlet-spec/)
@@ -13,6 +13,16 @@
 [Features](#-features) · [Architecture](#-architecture) · [Tech Stack](#-tech-stack) · [Setup](#-setup--installation) · [Screenshots](#-screenshots) · [API Routes](#-api-routes)
 
 </div>
+
+---
+
+## 🧠 Why No Frameworks?
+
+Most Java web projects reach for Spring Boot immediately. This project deliberately doesn't.
+
+Every layer here is hand-rolled: authentication filters, DAO classes, service boundaries, exception hierarchies, session utilities, and DB connection management. The goal was to understand what frameworks abstract away — and prove that understanding in code.
+
+This means the codebase is more verbose than a Spring Boot equivalent. It's also more transparent.
 
 ---
 
@@ -31,13 +41,12 @@
 - **User Management** — View, activate, and suspend user accounts with pagination
 - **Plan Management** — Create, view, and deactivate telecom plans
 
-### Security & UX
-- **BCrypt Password Hashing** — Industry-standard password security using jBCrypt
+### Security
+- **BCrypt Password Hashing** — Industry-standard password security using jBCrypt (cost factor 10)
 - **Session-based Authentication** — Servlet filter guards all protected routes
 - **Role-based Access Control** — Separate `USER` and `ADMIN` roles with route-level enforcement
 - **Remember Me Tokens** — UUID-based secure tokens with HTTP-only cookies
 - **Input Validation** — Server-side validation on all forms
-- **Responsive UI** — Modern design with animated gradients, smooth transitions, and mobile support
 
 ---
 
@@ -73,11 +82,9 @@
 | **Database** | MySQL 8.0 with plain JDBC |
 | **Security** | BCrypt (jBCrypt), HTTP-only cookies, session tokens |
 | **Build Tool** | Apache Maven |
-| **Server** | Apache Tomcat 7+ (embedded via Maven plugin) |
+| **Server** | Apache Tomcat 9+ |
 | **Frontend** | JSP, custom CSS with animations, SVG icons |
-| **Architecture** | MVC + DAO + Service Layer (no Spring, no Bootstrap) |
-
-> **Note:** This project intentionally uses **no frameworks** (no Spring, no Hibernate, no Bootstrap) to demonstrate strong fundamentals in Java EE, JDBC, and raw web development.
+| **Architecture** | MVC + DAO + Service Layer |
 
 ---
 
@@ -159,7 +166,6 @@ mvn clean package tomcat7:run
 ```
 
 ### 5. Access the Application
-Open your browser and navigate to:
 ```
 http://localhost:8080/teleserve
 ```
@@ -167,42 +173,37 @@ http://localhost:8080/teleserve
 ### Default Credentials
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@teleserve.com | password123 |
-| User | rahul@example.com | password123 |
+| Admin | admin@teleserve.com | teleserve@admin |
+| User | rahul@example.com | teleserve@user |
 
 ---
 
 ## 📸 Screenshots
 
 ### Login Page
-> Modern login with animated gradient background, input icons, and Remember Me
+> Animated gradient background, input icons, and Remember Me
 
-<!-- Replace with actual screenshot -->
- ![Login](screenshots/login.png) 
+![Login](screenshots/login.png)
 
 ### User Dashboard
-> Account overview, current plan, data usage with progress bar, and smart plan suggestion
+> Account overview, active plan, data usage progress bar, and smart plan suggestion
 
-<!-- Replace with actual screenshot -->
- ![Dashboard](screenshots/dashboard.png) 
+![Dashboard](screenshots/dashboard.png)
 
 ### Recharge Plans
-> Card-based plan selection with pricing, data, and validity details
+> Card-based plan selection with pricing, data allowance, and validity
 
-<!-- Replace with actual screenshot -->
- ![Recharge](screenshots/recharge.png) 
+![Recharge](screenshots/recharge.png)
 
 ### Admin Dashboard
-> Platform metrics with animated stat cards
+> Platform metrics — total users, recharges, and revenue
 
-<!-- Replace with actual screenshot -->
- ![Admin](screenshots/admin-dashboard.png) 
+![Admin](screenshots/admin-dashboard.png)
 
 ### Admin — Plan Management
 > Create and manage telecom plans with inline form and status badges
 
-<!-- Replace with actual screenshot -->
- ![Plans](screenshots/plans.png) 
+![Plans](screenshots/plans.png)
 
 ---
 
@@ -256,39 +257,27 @@ users ──────────── recharges ─────────
  │ password_hash     │ recharged_at         │ validity_days
  │ role              │ expiry_date          │ category
  │ status            │ status               │ is_active
- │ remember_token    │                      │
- │ created_at        │                      │ created_at
+ │ remember_token    │                      │ created_at
+ │ created_at        │                      │
  │                   │                      │
- └──── usage_log     │                      │
-        │ log_id     │                      │
-        │ user_id    │                      │
-        │ date       │                      │
-        │ data_used  │                      │
+ └──── usage_log ────┘
+        │ log_id
+        │ user_id (FK)
+        │ date
+        │ data_used
 ```
 
 ---
 
-## 🎨 UI/UX Highlights
+## 🐛 Engineering Notes
 
-- **Animated Gradient Background** — Multi-layered CSS gradient waves with continuous motion
-- **Smooth Page Transitions** — Staggered `fadeInUp` animations on cards, tables, and form fields
-- **Interactive Elements** — Hover lift effects, icon color transitions, button glow shadows
-- **Modern Typography** — Plus Jakarta Sans (headings) + DM Sans (body) from Google Fonts
-- **Status Indicators** — Glowing dots, color-coded badges, progress bars with gradient fills
-- **Responsive Design** — Fully responsive grid layouts adapting to mobile, tablet, and desktop
-- **SVG Icons** — Inline SVGs for crisp rendering at any resolution (no external icon libraries)
+Two runtime bugs worth documenting — both caught and fixed during development:
 
----
+**1. AbstractMethodError on Servlet Filter initialization**
+Compiling against Servlet API 4.0 (which provides default method implementations on `Filter`) while deploying to Tomcat 7 (which implements Servlet 3.0, where `Filter` methods are abstract) caused an `AbstractMethodError` at runtime. Fixed by adding explicit `init()` and `destroy()` lifecycle overrides to all Filter classes rather than relying on the 4.0 default methods.
 
-## 🗺 Roadmap
-
-- [ ] Forgot Password (email-based reset)
-- [ ] Email Verification on Registration
-- [ ] Delete Account
-- [ ] Profile Edit
-- [ ] Invoice PDF Generation
-- [ ] Real-time Usage Notifications
-- [ ] Dark Mode Toggle
+**2. Silent JSP rendering failures with EL 2.2 on Tomcat 7**
+Expression Language method invocations (e.g. `${list.size()}`) silently failed to render under Tomcat 7's EL 2.2 implementation, which doesn't support direct method calls. Fixed by replacing unsupported EL expressions with JSTL function equivalents (`fn:length()`) and escaping EL-reserved operators where needed.
 
 ---
 
